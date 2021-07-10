@@ -1,5 +1,6 @@
 import 'package:collegeproject/Provider/Auth.dart';
 import 'package:collegeproject/Provider/Notification.dart';
+import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/PlantView/Tababar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -29,8 +30,9 @@ class _HomePageState extends State<HomePage> {
   final dbRef = FirebaseDatabase.instance
       .reference()
       // TODO:
-      // .child(StorageUtil.getString('uid'))
-      .child('5gIvlKZmWcV4pilD9bGFJUAE4Kb2')
+      .child(
+        StorageUtil.getString("uid"),
+      )
       .child("PlantData");
 
   List lists = List();
@@ -121,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SetUpCollectionTabs(
-                                    docid: lists[index]["plantname"].toString(),
+                                    docid: lists[index]["smartID"].toString(),
                                   ),
                                 ),
                               );

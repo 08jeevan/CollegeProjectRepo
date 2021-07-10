@@ -30,14 +30,15 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
   final picker = ImagePicker();
 
   var _chosenValue;
-  var _chosenData;
 
   final databaseReference = FirebaseDatabase.instance.reference();
 
   // DB Rederence
   Reference reference = FirebaseStorage.instance
       .ref()
-      .child("5gIvlKZmWcV4pilD9bGFJUAE4Kb2")
+      .child(
+        StorageUtil.getString("uid"),
+      )
       .child("image" + DateTime.now().toString());
 
   // TextFeild
@@ -46,8 +47,8 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
   TextEditingController wifipass = TextEditingController();
 
   List<String> plantList = [
-    "AFRICAN VIOLET+8",
-    "ALGAONEMA+2",
+    "AFRICAN VIOLET",
+    "ALGAONEMA",
     "APHELANDRA",
     "ARALIA",
     "ARDISIA",
@@ -98,7 +99,9 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
         setState(() {
           displayUrl = imageUrl;
           final ref = databaseReference
-              .child("5gIvlKZmWcV4pilD9bGFJUAE4Kb2")
+              .child(
+                StorageUtil.getString("uid"),
+              )
               .child("PlantData")
               .child(uniquedeviceid.text);
           ref.child("plantname").set(
@@ -109,11 +112,10 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
           ref.child('moist').set(0);
 
           ref.child("hum").set(0);
-          ref.child('temp').set(0.0);
+          ref.child('temp').set(0.01);
           ref.child("changepass").set(false);
           ref.child("ssid").set(wifiid.text);
           ref.child("pass").set(wifiid.text);
-          ref.child('moisturelimit').set(_chosenData);
           ref
               .child("plantimg")
               .set(
@@ -134,7 +136,9 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
               databaseReference.child('devices').child(uniquedeviceid.text);
           deviceref.child('plantname').set(_chosenValue);
           //TOD0: Chanage UID
-          deviceref.child('uid').set('5gIvlKZmWcV4pilD9bGFJUAE4Kb2');
+          deviceref.child('uid').set(
+                StorageUtil.getString("uid"),
+              );
         });
       } catch (onError) {
         print("Error");
@@ -203,10 +207,6 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                 SizedBox(height: 25.0),
                 Container(
                   padding: EdgeInsets.only(left: 3.0),
-                  decoration: BoxDecoration(
-                      // borderRadius: BorderRadius.circular(15.0),
-                      // border: Border.all(color: Colors.grey[300], width: 1.0),
-                      ),
                   width: MediaQuery.of(context).size.width,
                   child: DropdownButtonFormField<String>(
                     value: _chosenValue,
@@ -237,7 +237,6 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                     onChanged: (String value) {
                       setState(() {
                         _chosenValue = value;
-                        _chosenData = value.substring(0, 2);
                       });
                     },
                     validator: (value) =>

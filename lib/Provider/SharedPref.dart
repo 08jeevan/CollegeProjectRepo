@@ -30,18 +30,9 @@ class StorageUtil {
     if (_preferences == null) return null;
     return _preferences.setString(key, value);
   }
+
+  static removeString() async {
+    if (_preferences == null) return null;
+    await _preferences.clear();
+  }
 }
-
-// import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-// class UserSecureStorage {
-//   static final _storage = FlutterSecureStorage();
-
-//   static const _keyUsername = 'username';
-
-//   static Future setUsername(String username) async =>
-//       await _storage.write(key: _keyUsername, value: username);
-
-//   static Future<String> getUsername() async =>
-//       await _storage.read(key: _keyUsername);
-// }

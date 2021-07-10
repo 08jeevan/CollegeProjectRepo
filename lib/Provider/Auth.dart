@@ -31,8 +31,7 @@ class Authentification {
         });
 
         // Shared Pref UID
-
-        // SharedPref.setData("uid", userCredential.user.uid.toString());
+        StorageUtil.putString("uid", userCredential.user.uid.toString());
         print(".....................................................");
         print(userCredential.user.uid.toString());
 

@@ -3,8 +3,9 @@ class DHT {
   final int humidity;
   final int moisture;
   final String plantimg;
+  final String docID;
 
-  DHT({this.temp, this.humidity, this.moisture, this.plantimg});
+  DHT({this.temp, this.humidity, this.moisture, this.plantimg, this.docID});
 
   factory DHT.fromJson(Map<dynamic, dynamic> json) {
     return DHT(
@@ -12,6 +13,7 @@ class DHT {
       humidity: json["hum"],
       moisture: json["moist"],
       plantimg: json["plantimg"],
+      docID: json["smartID"],
     );
   }
 

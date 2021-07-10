@@ -1,3 +1,4 @@
+import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/PlantView/plantView_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
@@ -19,7 +20,9 @@ class _PlanView_LogsState extends State<PlanView_Logs> {
       body: StreamBuilder(
         stream: FirebaseDatabase.instance
             .reference()
-            .child('5gIvlKZmWcV4pilD9bGFJUAE4Kb2')
+            .child(
+              StorageUtil.getString("uid"),
+            )
             .child('PlantData')
             .child(widget.docid.toString())
             .child('logs')

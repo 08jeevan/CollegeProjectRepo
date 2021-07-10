@@ -17,8 +17,8 @@ class _SettingsPageState extends State<SettingsPage> {
   String val = "";
   // Form
   final _formKey = GlobalKey<FormState>();
-  bool _enableBtn = false;
-  TextEditingController emailController = TextEditingController();
+  bool _enableBotton = false;
+
   TextEditingController subjectController = TextEditingController();
   TextEditingController messageController = TextEditingController();
 
@@ -27,7 +27,6 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void dispose() {
     super.dispose();
-    emailController.dispose();
     subjectController.dispose();
     messageController.dispose();
   }
@@ -71,7 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       key: _formKey,
                       onChanged: (() {
                         setState(() {
-                          _enableBtn = _formKey.currentState.validate();
+                          _enableBotton = _formKey.currentState.validate();
                         });
                       }),
                       child: Container(
@@ -87,25 +86,12 @@ class _SettingsPageState extends State<SettingsPage> {
                                   return null;
                                 })),
                             TextFields(
-                                controller: TextEditingController(
-                                    text: "ourproject@gmail.com"),
-                                name: "Email",
-                                // initialValue: user.email.toString(),
-                                validator: ((value) {
-                                  if (value.isEmpty) {
-                                    return 'Email is required';
-                                  } else if (!value.contains('@')) {
-                                    return 'Please enter a valid email address';
-                                  }
-                                  return null;
-                                })),
-                            TextFields(
                               controller: messageController,
                               name: "Message",
                               validator: ((value) {
                                 if (value.isEmpty) {
                                   setState(() {
-                                    _enableBtn = true;
+                                    _enableBotton = true;
                                   });
                                   return 'Message is required';
                                 }
@@ -116,12 +102,12 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             ElevatedButton(
                               child: Text("Submit"),
-                              onPressed: _enableBtn
+                              onPressed: _enableBotton
                                   ? (() async {
                                       final Email email = Email(
                                         body: messageController.text,
                                         subject: subjectController.text,
-                                        recipients: [emailController.text],
+                                        recipients: ["ourproject@gmail.com"],
                                         isHTML: false,
                                       );
                                       await FlutterEmailSender.send(email);
@@ -134,54 +120,18 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   ListTile(
-                    title: Text(
-                      "Log Out",
-                      style: GoogleFonts.redHatDisplay(
-                        color: Colors.red,
-                        fontWeight: FontWeight.w600,
+                      title: Text(
+                        "Log Out",
+                        style: GoogleFonts.redHatDisplay(
+                          color: Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                    leading: Icon(Icons.logout, color: Colors.red),
-                    onTap: signOut,
-                  ),
-                  ListTile(
-                    title: Text(
-                      "Set Data",
-                      style: GoogleFonts.redHatDisplay(
-                        color: Colors.green,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    onTap: () {
-                      StorageUtil.putString(
-                          "myString", "My stored string in shared preferences");
-                      print(
-                          "SET..................................................");
-                    },
-                  ),
-                  Text(
-                    savedString,
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  ListTile(
-                    title: Text(
-                      val.toString(),
-                      style: GoogleFonts.redHatDisplay(
-                        color: Colors.green,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    onTap: () {
-                      setState(() {
-                        savedString = StorageUtil.getString("myString");
-                      });
-                      print(
-                          "GET.................................................");
-                      print(
-                        val.toString(),
-                      );
-                    },
-                  ),
+                      leading: Icon(Icons.logout, color: Colors.red),
+                      onTap: () {
+                        StorageUtil.removeString();
+                        signOut();
+                      }),
                 ],
               ),
             ),

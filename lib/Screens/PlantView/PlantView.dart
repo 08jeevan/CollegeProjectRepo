@@ -1,3 +1,4 @@
+import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/PlantView/ChangeWifi.dart';
 import 'package:collegeproject/Screens/PlantView/plantView_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -23,7 +24,9 @@ class _PlantViewState extends State<PlantView> {
       body: SingleChildScrollView(
         child: StreamBuilder(
           stream: databaseReference
-              .child('5gIvlKZmWcV4pilD9bGFJUAE4Kb2')
+              .child(
+                StorageUtil.getString("uid"),
+              )
               .child('PlantData')
               .onValue,
           builder: (context, snapshot) {
@@ -33,7 +36,8 @@ class _PlantViewState extends State<PlantView> {
               print(
                   "Snapshot data: ${snapshot.data.snapshot.value.toString()}");
               //
-              var _dht = DHT.fromJson(snapshot.data.snapshot.value["GI"]);
+              var _dht = DHT.fromJson(
+                  snapshot.data.snapshot.value[widget.docid.toString()]);
 
               return Container(
                 padding: EdgeInsets.symmetric(
@@ -93,7 +97,9 @@ class _PlantViewState extends State<PlantView> {
                                   showModalBottomSheet(
                                       context: context,
                                       builder: (context) {
-                                        return ChangeWifi();
+                                        return ChangeWifi(
+                                          plantID: _dht.docID.toString(),
+                                        );
                                       });
                                 },
                                 child: Text(
@@ -124,9 +130,9 @@ class _PlantViewState extends State<PlantView> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   databaseReference
-                                      .child('5gIvlKZmWcV4pilD9bGFJUAE4Kb2')
+                                      .child(StorageUtil.getString("uid"))
                                       .child('PlantData')
-                                      .child('FYI')
+                                      .child(widget.docid.toString())
                                       .update({
                                     "motoractiv": true,
                                   }).then(
@@ -154,9 +160,9 @@ class _PlantViewState extends State<PlantView> {
                               child: ElevatedButton(
                                 onPressed: () {
                                   databaseReference
-                                      .child('5gIvlKZmWcV4pilD9bGFJUAE4Kb2')
+                                      .child(StorageUtil.getString("uid"))
                                       .child('PlantData')
-                                      .child('FYI')
+                                      .child(widget.docid.toString())
                                       .update({
                                     "motoractiv": false,
                                   }).then(
