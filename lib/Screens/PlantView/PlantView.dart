@@ -1,10 +1,16 @@
+import 'dart:convert';
 import 'package:collegeproject/Provider/SharedPref.dart';
+import 'package:http/http.dart' as http;
 import 'package:collegeproject/Screens/PlantView/ChangeWifi.dart';
 import 'package:collegeproject/Screens/PlantView/plantView_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+Widget weatherData(WeatherData weatherData) {
+  return Container(child: Text("${weatherData.temp}C"));
+}
 
 class PlantView extends StatefulWidget {
   String docid;
@@ -14,6 +20,10 @@ class PlantView extends StatefulWidget {
 }
 
 class _PlantViewState extends State<PlantView> {
+  var temp;
+
+  // Weather
+  //
   bool activatemotor = false;
 
   final databaseReference = FirebaseDatabase.instance.reference();
@@ -87,42 +97,6 @@ class _PlantViewState extends State<PlantView> {
                         label: "Temprature",
                         sublabel: _dht.temp.toString(),
                       ),
-                      SizedBox(height: 15.0),
-                      activatemotor == false
-                          ? Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return ChangeWifi(
-                                          plantID: _dht.docID.toString(),
-                                        );
-                                      });
-                                },
-                                child: Text(
-                                  "Change WIFI",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
-                          : Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.grey[300],
-                                ),
-                                child: Text(
-                                  "Change WIFI",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                      SizedBox(height: 10.0),
                       activatemotor == false
                           ? Container(
                               width: double.infinity,
@@ -183,7 +157,43 @@ class _PlantViewState extends State<PlantView> {
                                   style: TextStyle(color: Colors.white),
                                 ),
                               ),
+                            ),
+                      SizedBox(height: 15.0),
+                      activatemotor == false
+                          ? Container(
+                              width: double.infinity,
+                              height: 50.0,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      builder: (context) {
+                                        return ChangeWifi(
+                                          plantID: _dht.docID.toString(),
+                                        );
+                                      });
+                                },
+                                child: Text(
+                                  "Change WIFI",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             )
+                          : Container(
+                              width: double.infinity,
+                              height: 50.0,
+                              child: ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.grey[300],
+                                ),
+                                child: Text(
+                                  "Change WIFI",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                      SizedBox(height: 10.0),
                     ],
                   ),
                 ),

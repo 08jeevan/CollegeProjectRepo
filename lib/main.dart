@@ -7,8 +7,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'Screens/PlantView/Logs.dart';
-
 Future<void> _messageHandler(RemoteMessage message) async {
   print('...............................................');
   print('background message ${message.notification.body}');

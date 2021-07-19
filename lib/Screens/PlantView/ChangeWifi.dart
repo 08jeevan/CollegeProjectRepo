@@ -78,6 +78,7 @@ class _ChangeWifiState extends State<ChangeWifi> {
                     .child('PlantData')
                     .child(widget.plantID.toString())
                     .update({
+                  "changepass": true,
                   "ssid": changewifiid.text,
                   "pass": changewifipass.text
                 }).then(

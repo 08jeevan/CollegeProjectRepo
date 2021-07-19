@@ -16,9 +16,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  Future<void> signInWithGoogle() async {
-    await Authentification().signInWithGoogle();
-  }
+  // Future<void> signInWithGoogle() async {
+  //   await Authentification().signInWithGoogle();
+  // }
+
+  Authentification authentification = Authentification();
 
   final user = FirebaseAuth.instance.currentUser;
 
@@ -71,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const EdgeInsets.symmetric(horizontal: 25.0, vertical: 40.0),
               child: GestureDetector(
                 onTap: () {
-                  signInWithGoogle();
+                  authentification.signup(context);
                 },
                 child: Container(
                   height: 60.0,

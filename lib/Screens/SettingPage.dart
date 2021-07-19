@@ -1,6 +1,7 @@
 import 'package:collegeproject/Provider/Auth.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Provider/TextFeild.dart';
+import 'package:collegeproject/Screens/CommunitySupport/CommunityLandingPage.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -35,9 +36,11 @@ class _SettingsPageState extends State<SettingsPage> {
   final user = FirebaseAuth.instance.currentUser;
 
   // Sign Out
-  Future<void> signOut() async {
-    await Authentification().signOut();
-  }
+  // Future<void> signOut() async {
+  //   await Authentification().signOut();
+  // }
+
+  Authentification authentification = Authentification();
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +124,22 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   ListTile(
                       title: Text(
+                        "Ask Community",
+                        style: GoogleFonts.redHatDisplay(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      leading: Icon(Icons.support_agent_outlined,
+                          color: Colors.black),
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return CommunityLandingPage();
+                        }));
+                      }),
+                  ListTile(
+                      title: Text(
                         "Log Out",
                         style: GoogleFonts.redHatDisplay(
                           color: Colors.red,
@@ -130,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       leading: Icon(Icons.logout, color: Colors.red),
                       onTap: () {
                         StorageUtil.removeString();
-                        signOut();
+                        authentification.signOut();
                       }),
                 ],
               ),

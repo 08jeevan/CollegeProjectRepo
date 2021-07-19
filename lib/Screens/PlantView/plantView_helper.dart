@@ -1,7 +1,7 @@
 class DHT {
-  final double temp;
-  final int humidity;
-  final int moisture;
+  var temp;
+  var humidity;
+  var moisture;
   final String plantimg;
   final String docID;
 
@@ -31,4 +31,16 @@ class DHT {
   //     humidity: parser(json['hum']),
   //     moisture: parser(json['mois']),
   //   );
+}
+
+class WeatherData {
+  final double temp;
+
+  WeatherData({this.temp});
+
+  factory WeatherData.fromJson(Map<String, dynamic> json) {
+    return WeatherData(
+      temp: json["main"]["temp"].toDouble(),
+    );
+  }
 }

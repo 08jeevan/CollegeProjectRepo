@@ -43,8 +43,6 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
 
   // TextFeild
   TextEditingController uniquedeviceid = TextEditingController();
-  TextEditingController wifiid = TextEditingController();
-  TextEditingController wifipass = TextEditingController();
 
   List<String> plantList = [
     "AFRICAN VIOLET",
@@ -110,12 +108,9 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
 
           ref.child("smartID").set(uniquedeviceid.text);
           ref.child('moist').set(0);
-
           ref.child("hum").set(0);
           ref.child('temp').set(0.01);
           ref.child("changepass").set(false);
-          ref.child("ssid").set(wifiid.text);
-          ref.child("pass").set(wifiid.text);
           ref
               .child("plantimg")
               .set(
@@ -255,28 +250,7 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                     return null;
                   },
                 ),
-                // Wifi SSID
-                TextFields(
-                  controller: wifiid,
-                  name: 'Enter Wifi SSID',
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please Enter Wifi SSID';
-                    }
-                    return null;
-                  },
-                ),
-                // Wifi Password
-                TextFields(
-                  controller: wifipass,
-                  name: 'Enter Wifi Password',
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please Enter Wifi Password';
-                    }
-                    return null;
-                  },
-                ),
+
                 ElevatedButton(
                   child: Text("Submit"),
                   onPressed: () {
