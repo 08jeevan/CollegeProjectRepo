@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/CommunitySupport/AnsAQustionPage.dart';
 import 'package:collegeproject/Screens/CommunitySupport/AnswerPage.dart';
 import 'package:collegeproject/Screens/CommunitySupport/AskQustion.dart';
 import 'package:collegeproject/Screens/CommunitySupport/MyQustions.dart';
+import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
 class CommunityLandingPage extends StatefulWidget {
@@ -21,13 +22,10 @@ class _CommunityLandingPageState extends State<CommunityLandingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: Colors.black),
-        elevation: 0.5,
-        title: Text("Ask Community",
-            style: GoogleFonts.montserrat(
-              color: Colors.black,
-            )),
+        title: Text(
+          "Ask Community",
+          style: kApptitletextStyle,
+        ),
         actions: [
           GestureDetector(
             onTap: () {
@@ -48,10 +46,20 @@ class _CommunityLandingPageState extends State<CommunityLandingPage> {
           stream: firestore.collection('AllQueries').snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+            if (snapshot.hasError)
+              return Center(
+                child: Text(
+                  'No Data Found',
+                  style: kdefaulttextstyleblack,
+                ),
+              );
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return Center(child: Text('Loading...'));
+                return Center(
+                  child: loadingIndicator(
+                    text: "Loading",
+                  ),
+                );
               default:
                 return Container(
                   child: ListView(
@@ -71,69 +79,106 @@ class _CommunityLandingPageState extends State<CommunityLandingPage> {
                               .collection("Queries")
                               .doc(document['docid'])
                               .update({"views": document['views'] + 1});
+                          //
                           document['ans'].toString() == "no_ans_yet"
-                              ? showModalBottomSheet<void>(
+                              ? showModalBottomSheet(
                                   context: context,
-                                  builder: (BuildContext context) {
-                                    return Container(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 20.0, vertical: 8.0),
+                                  isScrollControlled: true,
+                                  enableDrag: true,
+                                  isDismissible: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) => Container(
+                                    decoration: new BoxDecoration(
                                       color: Colors.white,
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            Text(
-                                              document['qus'].toString(),
-                                            ),
-                                            SizedBox(height: 10.0),
-                                            document['img'].toString() == ""
-                                                ? Container()
-                                                : Container(
-                                                    height: 150.0,
-                                                    width: 150.0,
+                                      borderRadius: new BorderRadius.only(
+                                        topLeft: const Radius.circular(25.0),
+                                        topRight: const Radius.circular(25.0),
+                                      ),
+                                    ),
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 30.0, vertical: 15.0),
+                                      child: ListView(
+                                        shrinkWrap: true,
+                                        children: [
+                                          SizedBox(height: 15.0),
+                                          Text(
+                                            document['qus'].toString(),
+                                            style: klargetextstyle,
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 15.0),
+                                          document['img'].toString() == ""
+                                              ? Container()
+                                              : Container(
+                                                  height: 150.0,
+                                                  width: 150.0,
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15.0),
                                                     child: Image.network(
                                                       document['img']
                                                           .toString(),
+                                                      fit: BoxFit.cover,
+                                                      loadingBuilder: (BuildContext
+                                                              context,
+                                                          Widget child,
+                                                          ImageChunkEvent
+                                                              loadingProgress) {
+                                                        if (loadingProgress ==
+                                                            null) {
+                                                          return child;
+                                                        }
+                                                        return Center(
+                                                          child:
+                                                              loadingIndicator(
+                                                            text: "Loading",
+                                                          ),
+                                                        );
+                                                      },
                                                     ),
                                                   ),
-                                            ElevatedButton(
-                                              child: const Text(
-                                                  'Answer this Query'),
-                                              onPressed: () => Navigator.push(
-                                                  context, MaterialPageRoute(
-                                                      builder: (context) {
-                                                return AnsaQustion(
-                                                  docID: document['docid']
-                                                      .toString(),
-                                                  qustitle: document['qus']
-                                                      .toString(),
-                                                );
-                                              })),
-                                            )
-                                          ],
-                                        ),
+                                                ),
+                                          SizedBox(height: 12.0),
+                                          ElevatedButton(
+                                            child: Text(
+                                              'Answer this Qustion',
+                                              style: kdefaulttextstylewhite,
+                                            ),
+                                            onPressed: () => Navigator.push(
+                                                context, MaterialPageRoute(
+                                                    builder: (context) {
+                                              return AnsaQustion(
+                                                docID: document['docid']
+                                                    .toString(),
+                                                qustitle:
+                                                    document['qus'].toString(),
+                                              );
+                                            })),
+                                          ),
+                                          SizedBox(height: 10.0),
+                                        ],
                                       ),
-                                    );
-                                  },
+                                    ),
+                                  ),
                                 )
                               : Navigator.push(
                                   context,
                                   PageTransition(
-                                      type: PageTransitionType.rightToLeft,
-                                      child: AnswerPage(
-                                        docID: document['docid'].toString(),
-                                      )));
+                                    type: PageTransitionType.rightToLeft,
+                                    child: AnswerPage(
+                                      docID: document['docid'].toString(),
+                                      qus: document['qus'].toString(),
+                                      img: document['img'].toString(),
+                                    ),
+                                  ),
+                                );
                         },
                         child: new ListTile(
                           title: Text(
                             document['qus'].toString(),
-                            style: GoogleFonts.montserrat(
-                              color: Colors.black,
-                              fontSize: 15.0,
-                            ),
+                            style: kmediumtextstyle,
                           ),
                           trailing: Icon(
                             MaterialIcons.navigate_next,
@@ -156,7 +201,7 @@ class _CommunityLandingPageState extends State<CommunityLandingPage> {
             return AskQustion();
           }));
         },
-        label: Text("Ask a Qustion", style: GoogleFonts.montserrat()),
+        label: Text("Ask a Qustion", style: kdefaulttextstylewhite),
         icon: Icon(Icons.question_answer_outlined),
       ),
     );

@@ -1,18 +1,19 @@
+import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Screens/PlantView/plantView_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
-class PlanView_Logs extends StatefulWidget {
-  String docid;
-  PlanView_Logs({this.docid});
+class PlanViewLogs extends StatefulWidget {
+  final String docid;
+  PlanViewLogs({this.docid});
+
   @override
-  _PlanView_LogsState createState() => _PlanView_LogsState();
+  _PlanViewLogsState createState() => _PlanViewLogsState();
 }
 
-class _PlanView_LogsState extends State<PlanView_Logs> {
-  List lists = List();
+class _PlanViewLogsState extends State<PlanViewLogs> {
+  List lists = [];
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +48,17 @@ class _PlanView_LogsState extends State<PlanView_Logs> {
                       EdgeInsets.symmetric(horizontal: 25.0, vertical: 5.0),
                   child: Container(
                     decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[400])),
+                      border: Border.all(color: Colors.grey[400]),
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
                     child: ListTile(
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.grey, width: 1.0),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
                       title: Row(
                         children: [
-                          Text(lists[index]['date'].toString()),
+                          Text(lists[index]['date'].toString(),
+                              style: kdefaulttextstyleblack),
                           SizedBox(width: 15.0),
-                          Text(lists[index]['time'].toString()),
+                          Text(lists[index]['time'].toString(),
+                              style: kdefaulttextstyleblack),
                         ],
                       ),
                       subtitle: Column(
@@ -65,12 +66,15 @@ class _PlanView_LogsState extends State<PlanView_Logs> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           SizedBox(height: 5.0),
-                          Text("Temp : ${lists[index]['temp'].toString()} "),
+                          Text("Temp : ${lists[index]['temp'].toString()} ",
+                              style: kdefaulttextstyleblack),
                           SizedBox(height: 5.0),
-                          Text("Humidity : ${lists[index]['hum'].toString()} "),
+                          Text("Humidity : ${lists[index]['hum'].toString()} ",
+                              style: kdefaulttextstyleblack),
                           SizedBox(height: 5.0),
                           Text(
-                              "Moisture : ${lists[index]['moist'].toString()} "),
+                              "Moisture : ${lists[index]['moist'].toString()} ",
+                              style: kdefaulttextstyleblack),
                         ],
                       ),
                     ),
@@ -82,7 +86,8 @@ class _PlanView_LogsState extends State<PlanView_Logs> {
           return Center(
             child: Container(
               child: Center(
-                child: Text("No Log Availble Yet"),
+                child:
+                    Text("No Log Availble Yet", style: kdefaulttextstyleblack),
               ),
             ),
           );

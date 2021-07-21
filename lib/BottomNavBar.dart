@@ -61,7 +61,7 @@ class _MyNavBarState extends State<MyNavBar> {
                   width: 60.0,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.blue,
+                    color: Colors.purple[900],
                   ),
                   child: Center(
                     child: Icon(Icons.add, color: Colors.white),

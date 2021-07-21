@@ -16,10 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  // Future<void> signInWithGoogle() async {
-  //   await Authentification().signInWithGoogle();
-  // }
-
   Authentification authentification = Authentification();
 
   final user = FirebaseAuth.instance.currentUser;

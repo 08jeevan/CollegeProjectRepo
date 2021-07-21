@@ -1,11 +1,11 @@
-import 'package:collegeproject/Provider/Auth.dart';
+import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/Notification.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Screens/PlantView/Tababar.dart';
+import 'package:collegeproject/Screens/PlantView/PlantView.dart';
+import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 Notifiation notifiation = Notifiation();
 
@@ -28,13 +28,12 @@ class _HomePageState extends State<HomePage> {
 
   final dbRef = FirebaseDatabase.instance
       .reference()
-      // TODO:
       .child(
         StorageUtil.getString("uid"),
       )
       .child("PlantData");
 
-  List lists = List();
+  List lists = [];
 
   @override
   Widget build(BuildContext context) {
@@ -57,22 +56,14 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             child: Text(
                               "Welcome Back 👋",
-                              style: GoogleFonts.redHatDisplay(
-                                color: Colors.black,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.w700,
-                              ),
+                              style: klargetextstyle,
                             ),
                           ),
                           SizedBox(height: 5.0),
                           Container(
                             child: Text(
                               user.displayName.toString(),
-                              style: GoogleFonts.redHatDisplay(
-                                color: Colors.black,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: kmediumtextstyle,
                             ),
                           ),
                         ],
@@ -85,11 +76,7 @@ class _HomePageState extends State<HomePage> {
                   width: MediaQuery.of(context).size.width,
                   child: Text(
                     "Let's Start\nWatering Plants",
-                    style: GoogleFonts.redHatDisplay(
-                      color: Colors.black,
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: klargetextboldstyle,
                   ),
                 ),
                 SizedBox(height: 50.0),
@@ -121,8 +108,9 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => SetUpCollectionTabs(
+                                  builder: (context) => PlantView(
                                     docid: lists[index]["smartID"].toString(),
+                                    img: lists[index]["plantimg"].toString(),
                                   ),
                                 ),
                               );
@@ -142,10 +130,7 @@ class _HomePageState extends State<HomePage> {
                                     child: Text(
                                       lists[index]["plantname"],
                                       maxLines: 1,
-                                      style: GoogleFonts.redHatDisplay(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                      style: klargetextstyle,
                                     ),
                                   ),
                                   SizedBox(height: 3.0),
@@ -154,11 +139,7 @@ class _HomePageState extends State<HomePage> {
                                         EdgeInsets.symmetric(horizontal: 10.0),
                                     child: Text(
                                       lists[index]["smartID"],
-                                      style: GoogleFonts.redHatDisplay(
-                                        fontSize: 12.0,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.grey.shade400,
-                                      ),
+                                      style: kdefaulttextstyleblack,
                                     ),
                                   ),
                                   SizedBox(height: 5.0),
@@ -173,23 +154,20 @@ class _HomePageState extends State<HomePage> {
                                         child: Image.network(
                                           lists[index]["plantimg"].toString(),
                                           fit: BoxFit.cover,
+                                          cacheHeight: 500,
+                                          cacheWidth: 500,
                                           loadingBuilder: (context, child,
                                               loadingProgress) {
                                             if (loadingProgress == null)
                                               return child;
-
-                                            return Container(
-                                              height: 15.0,
-                                              width: 15.0,
-                                              child: Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                            );
+                                            return loadingIndicator(
+                                                text: 'Loading');
                                           },
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Text('Some errors occurred!'),
+                                          errorBuilder: (context, error,
+                                                  stackTrace) =>
+                                              Text('Errors occurred!',
+                                                  style:
+                                                      kdefaulttextstyleblack),
                                         ),
                                       ),
                                     ),
@@ -200,14 +178,21 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                       );
-                    }
-                    return Center(
-                      child: Container(
+                    } else if (lists.isNotEmpty) {
+                      return Container(
+                        child: Text(
+                            'No Plants added yet.\n Click the ➕ icon to add your plant',
+                            style: kmediumtextstyle),
+                      );
+                    } else {
+                      return Container(
                         child: Center(
-                          child: Text("Add Plants"),
+                          child: Text(
+                              'No Plants added yet.\n Click the ➕ icon to add your plant',
+                              style: kmediumtextstyle),
                         ),
-                      ),
-                    );
+                      );
+                    }
                   },
                 ),
                 SizedBox(height: 10.0),
@@ -219,3 +204,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
+
+// if (snapshot.hasData &&
+//                         !snapshot.hasError &&
+//                         snapshot.data.snapshot.value != null) {
+                      
+//                     return Center(
+//                       child: Container(
+//                         child: Center(
+//                           child: Text("Add Plants"),
+//                         ),
+//                       ),
+//                     );

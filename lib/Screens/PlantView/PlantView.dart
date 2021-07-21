@@ -1,20 +1,19 @@
-import 'dart:convert';
+import 'package:collegeproject/API/PlantDataJson.dart';
+import 'package:collegeproject/API/WeatherApi.dart';
+import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:http/http.dart' as http;
+import 'package:collegeproject/Screens/PlantView/Logs.dart';
+import 'package:collegeproject/Widgets/LoadingIndicator.dart';
+import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
+import 'package:collegeproject/Widgets/WeatherWidget.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:collegeproject/Screens/PlantView/ChangeWifi.dart';
-import 'package:collegeproject/Screens/PlantView/plantView_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
-
-Widget weatherData(WeatherData weatherData) {
-  return Container(child: Text("${weatherData.temp}C"));
-}
 
 class PlantView extends StatefulWidget {
-  String docid;
-  PlantView({this.docid});
+  final String docid, img;
+  PlantView({this.docid, this.img});
   @override
   _PlantViewState createState() => _PlantViewState();
 }
@@ -23,10 +22,17 @@ class _PlantViewState extends State<PlantView> {
   var temp;
 
   // Weather
-  //
+  @override
+  void initState() {
+    super.initState();
+    fetchPost();
+  }
+
   bool activatemotor = false;
 
   final databaseReference = FirebaseDatabase.instance.reference();
+
+  Weather _weather;
 
   @override
   Widget build(BuildContext context) {
@@ -43,214 +49,315 @@ class _PlantViewState extends State<PlantView> {
             if (snapshot.hasData &&
                 !snapshot.hasError &&
                 snapshot.data.snapshot.value != null) {
-              print(
-                  "Snapshot data: ${snapshot.data.snapshot.value.toString()}");
-              //
               var _dht = DHT.fromJson(
                   snapshot.data.snapshot.value[widget.docid.toString()]);
 
               return Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 30.0,
-                ),
-                child: Container(
-                  child: Column(
-                    children: [
-                      SizedBox(height: 20.0),
-                      Container(
-                        height: 150.0,
-                        width: 150.0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20.0),
+                child: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          height: 300.0,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.transparent,
                           child: Image.network(
-                            _dht.plantimg.toString(),
+                            widget.img.toString(),
                             fit: BoxFit.cover,
+                            cacheHeight: 500,
+                            cacheWidth: 500,
                             loadingBuilder: (context, child, loadingProgress) {
                               if (loadingProgress == null) return child;
-
-                              return Center(child: CircularProgressIndicator());
+                              return loadingIndicator(text: 'Loading Image');
                             },
-                            errorBuilder: (context, error, stackTrace) =>
-                                Text('Some errors occurred!'),
+                            errorBuilder: (context, error, stackTrace) => Text(
+                                'Errors occurred!',
+                                style: kdefaulttextstyleblack),
                           ),
                         ),
-                      ),
-                      SizedBox(height: 25.0),
-                      // Change accordingly
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Info(
-                            dht: _dht,
-                            label: "Moisture",
-                            sublabel: _dht.moisture.toString(),
+                        Positioned(
+                          top: 45.0,
+                          left: 30.0,
+                          child: Icon(
+                            AntDesign.arrowleft,
+                            color: Colors.black,
                           ),
-                          Info(
-                            dht: _dht,
-                            label: "Humidity",
-                            sublabel: _dht.humidity.toString(),
+                        ),
+                        Positioned(
+                          bottom: 30.0,
+                          left: 30.0,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(_dht.plantname.toString(),
+                                  style: klargetextboldstyle),
+                              SizedBox(height: 5.0),
+                              Text(_dht.smartDeviceId.toString(),
+                                  style: kmediumtextstyle),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: Text('Temprature', style: kmediumtextstyle),
+                            subtitle: Text(
+                              _dht.temp.toString() + "° c",
+                              style: klargetextboldstyle,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 0.0,
+                          ),
+                          ListTile(
+                            title: Text('Moisture', style: kmediumtextstyle),
+                            subtitle: Text(
+                              _dht.moisture.toString(),
+                              style: klargetextboldstyle,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 0.0,
+                          ),
+                          ListTile(
+                            title: Text('Humidity', style: kmediumtextstyle),
+                            subtitle: Text(
+                              _dht.humidity.toString(),
+                              style: klargetextboldstyle,
+                            ),
+                          ),
+                          FutureBuilder(
+                            future: fetchPost(
+                              zipcode: _dht.zipcode.toString(),
+                              countrycode: _dht.countryCode.toString(),
+                            ),
+                            builder: (context, snapshot) {
+                              if (snapshot != null) {
+                                this._weather = snapshot.data;
+                                if (this._weather == null) {
+                                  return loadingIndicator(text: 'Loading');
+                                } else {
+                                  return weatherBox(_weather, context);
+                                }
+                              } else {
+                                return CircularProgressIndicator();
+                              }
+                            },
+                          ),
+                          SizedBox(height: 10.0),
+                          Divider(
+                            color: Colors.grey[300],
+                            indent: 25.0,
+                            endIndent: 25.0,
+                          ),
+                          ListTile(
+                            title: Text('Change Wifi Password',
+                                style: kmediumtextstyle),
+                            trailing: Icon(
+                              AntDesign.arrowright,
+                              color: Colors.black,
+                            ),
+                            onTap: () {
+                              showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  enableDrag: true,
+                                  isDismissible: true,
+                                  backgroundColor: Colors.transparent,
+                                  builder: (context) {
+                                    return ChangeWifi(
+                                      plantID: _dht.docID.toString(),
+                                    );
+                                  });
+                            },
+                          ),
+                          ListTile(
+                            title: Text('Logs', style: kmediumtextstyle),
+                            trailing: Icon(
+                              AntDesign.arrowright,
+                              color: Colors.black,
+                            ),
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return PlanViewLogs();
+                              }));
+                            },
                           ),
                         ],
                       ),
-                      Info(
-                        dht: _dht,
-                        label: "Temprature",
-                        sublabel: _dht.temp.toString(),
-                      ),
-                      activatemotor == false
-                          ? Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  databaseReference
-                                      .child(StorageUtil.getString("uid"))
-                                      .child('PlantData')
-                                      .child(widget.docid.toString())
-                                      .update({
-                                    "motoractiv": true,
-                                  }).then(
-                                    (value) => Fluttertoast.showToast(
-                                      msg: "Motor activated",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0,
-                                    ),
-                                  );
-                                  setState(() {
-                                    activatemotor = true;
-                                  });
-                                },
-                                child: Text(
-                                  "Activate Motor",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
-                          : Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  databaseReference
-                                      .child(StorageUtil.getString("uid"))
-                                      .child('PlantData')
-                                      .child(widget.docid.toString())
-                                      .update({
-                                    "motoractiv": false,
-                                  }).then(
-                                    (value) => Fluttertoast.showToast(
-                                      msg: "Motor Deactivated",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.BOTTOM,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0,
-                                    ),
-                                  );
-                                  setState(() {
-                                    activatemotor = false;
-                                  });
-                                },
-                                child: Text(
-                                  "Deactivate Motor",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                      SizedBox(height: 15.0),
-                      activatemotor == false
-                          ? Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (context) {
-                                        return ChangeWifi(
-                                          plantID: _dht.docID.toString(),
-                                        );
-                                      });
-                                },
-                                child: Text(
-                                  "Change WIFI",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            )
-                          : Container(
-                              width: double.infinity,
-                              height: 50.0,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.grey[300],
-                                ),
-                                child: Text(
-                                  "Change WIFI",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                      SizedBox(height: 10.0),
-                    ],
-                  ),
+                    ),
+                    SizedBox(height: 65.0),
+                  ],
                 ),
               );
             } else {
               return Center(
-                child: Text("NO DATA FOUND😢"),
+                child: Text("NO DATA FOUND😢", style: kdefaulttextstyleblack),
               );
             }
           },
         ),
       ),
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterFloat,
+      floatingActionButton: activatemotor == false
+          ? FloatingActionButton.extended(
+              label: Text('Activate Motor', style: kdefaulttextstylewhite),
+              onPressed: () {
+                databaseReference
+                    .child(StorageUtil.getString("uid"))
+                    .child('PlantData')
+                    .child(widget.docid.toString())
+                    .update({
+                  "motoractiv": true,
+                }).then((value) => flutterToast(msg: 'Motor Activated'));
+                setState(() {
+                  activatemotor = true;
+                });
+              },
+            )
+          : FloatingActionButton.extended(
+              label: Text('Activate Motor', style: kdefaulttextstylewhite),
+              onPressed: () {
+                databaseReference
+                    .child(StorageUtil.getString("uid"))
+                    .child('PlantData')
+                    .child(widget.docid.toString())
+                    .update({
+                  "motoractiv": false,
+                }).then(
+                  (value) => flutterToast(msg: 'Motor Deactivated'),
+                );
+                setState(() {
+                  activatemotor = false;
+                });
+              },
+            ),
     );
   }
 }
 
-class Info extends StatelessWidget {
-  const Info({
-    Key key,
-    @required DHT dht,
-    this.label,
-    this.sublabel,
-  })  : _dht = dht,
-        super(key: key);
+// Container(
+//                 padding: EdgeInsets.symmetric(
+//                   horizontal: 30.0,
+//                 ),
+//                 child: Container(
+//                   child: Column(
+//                     children: [
+//                       SizedBox(height: 20.0),
+//                       Container(
+//                         height: 150.0,
+//                         width: 150.0,
+//                         child: ClipRRect(
+//                           borderRadius: BorderRadius.circular(20.0),
+//                           child: Image.network(
+//                             _dht.plantimg.toString(),
+//                             fit: BoxFit.cover,
+//                             loadingBuilder: (context, child, loadingProgress) {
+//                               if (loadingProgress == null) return child;
 
-  final DHT _dht;
-  final String label;
-  final String sublabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        padding: const EdgeInsets.all(25.0),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0), color: Colors.grey[200]),
-        child: Column(
-          children: [
-            Text(
-              label,
-              style: GoogleFonts.montserrat(
-                fontSize: 13.0,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-            SizedBox(height: 8.0),
-            Text(
-              sublabel,
-              style: GoogleFonts.montserrat(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//                               return Center(child: CircularProgressIndicator());
+//                             },
+//                             errorBuilder: (context, error, stackTrace) => Text(
+//                                 'Some errors occurred!',
+//                                 style: kdefaulttextstyleblack),
+//                           ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 25.0),
+//                       // Change accordingly
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         children: [
+//                           Info(
+//                             dht: _dht,
+//                             label: "Moisture",
+//                             sublabel: _dht.moisture.toString(),
+//                           ),
+//                           Info(
+//                             dht: _dht,
+//                             label: "Humidity",
+//                             sublabel: _dht.humidity.toString(),
+//                           ),
+//                         ],
+//                       ),
+//                       Info(
+//                         dht: _dht,
+//                         label: "Temprature",
+//                         sublabel: _dht.temp.toString(),
+//                       ),
+//                       activatemotor == false
+//                           ? Container(
+//                               width: double.infinity,
+//                               height: 50.0,
+//                               child: ElevatedButton(
+//                                 onPressed: () {
+//                                   
+//                                 child: Text("Activate Motor",
+//                                     style: kdefaulttextstylewhite),
+//                               ),
+//                             )
+//                           : Container(
+//                               width: double.infinity,
+//                               height: 50.0,
+//                               child: ElevatedButton(
+//                                 onPressed: () {
+//                                   
+//                                 },
+//                                 child: Text("Deactivate Motor",
+//                                     style: kdefaulttextstylewhite),
+//                               ),
+//                             ),
+//                       SizedBox(height: 15.0),
+//                       activatemotor == false
+//                           ? Container(
+//                               width: double.infinity,
+//                               height: 50.0,
+//                               child: ElevatedButton(
+//                                 onPressed: () {
+//                                   
+//                                 },
+//                                 child: Text("Change WIFI",
+//                                     style: kdefaulttextstylewhite),
+//                               ),
+//                             )
+//                           : Container(
+//                               width: double.infinity,
+//                               height: 50.0,
+//                               child: ElevatedButton(
+//                                 onPressed: () {},
+//                                 style: ElevatedButton.styleFrom(
+//                                   primary: Colors.grey[300],
+//                                 ),
+//                                 child: Text("Change WIFI",
+//                                     style: kdefaulttextstylewhite),
+//                               ),
+//                             ),
+//                       SizedBox(height: 10.0),
+//                       FutureBuilder(
+//                         future: fetchPost(
+//                           zipcode: _dht.zipcode.toString(),
+//                           countrycode: _dht.countryCode.toString(),
+//                         ),
+//                         builder: (context, snapshot) {
+//                           if (snapshot != null) {
+//                             this._weather = snapshot.data;
+//                             if (this._weather == null) {
+//                               return Text("Loading");
+//                             } else {
+//                               return weatherBox(_weather);
+//                             }
+//                           } else {
+//                             return CircularProgressIndicator();
+//                           }
+//                         },
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               );

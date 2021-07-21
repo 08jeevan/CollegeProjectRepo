@@ -1,4 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+// Toast messages
+Widget flutterToast({String msg}) {
+  Fluttertoast.showToast(
+    msg: msg,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+    textColor: Colors.white,
+    fontSize: 16.0,
+  );
+}
+
+// TextFeilds
 
 final OutlineInputBorder kborder = OutlineInputBorder(
   borderRadius: BorderRadius.circular(15.0),
@@ -22,10 +36,6 @@ class TextFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    OutlineInputBorder border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(15.0),
-      borderSide: BorderSide(color: Colors.grey[300], width: 1.0),
-    );
     return Padding(
       padding: EdgeInsets.only(bottom: 12.0),
       child: TextFormField(
@@ -44,7 +54,6 @@ class TextFields extends StatelessWidget {
           enabledBorder: kborder,
           errorBorder: kborder,
         ),
-        // The validator receives the text that the user has entered.
         validator: validator,
       ),
     );

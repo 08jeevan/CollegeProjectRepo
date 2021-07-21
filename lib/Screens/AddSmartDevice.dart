@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:collegeproject/BottomNavBar.dart';
+import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Provider/TextFeild.dart';
+import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
+import 'package:country_list_pick/country_list_pick.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,8 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
 
   File _image;
 
+  String countryCode;
+
   final picker = ImagePicker();
 
   var _chosenValue;
@@ -43,6 +47,7 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
 
   // TextFeild
   TextEditingController uniquedeviceid = TextEditingController();
+  TextEditingController zipcode = TextEditingController();
 
   List<String> plantList = [
     "AFRICAN VIOLET",
@@ -110,6 +115,8 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
           ref.child('moist').set(0);
           ref.child("hum").set(0);
           ref.child('temp').set(0.01);
+          ref.child('zipcode').set(zipcode.text);
+          ref.child('countrycode').set(countryCode);
           ref.child("changepass").set(false);
           ref
               .child("plantimg")
@@ -157,10 +164,7 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                 SizedBox(height: 60.0),
                 Text(
                   "Add your plant",
-                  style: GoogleFonts.redHatDisplay(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: klargetextboldstyle,
                 ),
                 SizedBox(height: 40.0),
                 _image == null
@@ -214,7 +218,7 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                       );
                     }).toList(),
                     hint: Text(
-                      "  Please choose a Plant",
+                      "Please choose a Plant",
                       style: TextStyle(
                         fontSize: 16,
                       ),
@@ -250,9 +254,48 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                     return null;
                   },
                 ),
+                TextFields(
+                  controller: zipcode,
+                  name: 'Enter your Zipcode',
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please Enter your IOT Unique ID';
+                    }
+                    return null;
+                  },
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: 60.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    color: Colors.grey[200],
+                  ),
+                  child: CountryListPick(
+                    theme: CountryTheme(
+                      isShowCode: false,
+                      isDownIcon: false,
+                      isShowTitle: true,
+                      alphabetTextColor: Colors.black,
+                      labelColor: Colors.black,
+                      alphabetSelectedTextColor: Colors.black,
+                      alphabetSelectedBackgroundColor: Colors.transparent,
+                      showEnglishName: true,
+                      isShowFlag: false,
+                    ),
+                    initialSelection: '+91',
+                    onChanged: (CountryCode code) {
+                      print(code.code);
+                      setState(() {
+                        countryCode = code.code;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(height: 25.0),
 
                 ElevatedButton(
-                  child: Text("Submit"),
+                  child: Text("Submit", style: kdefaulttextstylewhite),
                   onPressed: () {
                     if (_formKey.currentState.validate() && _image != null) {
                       _formKey.currentState.save();
@@ -293,7 +336,7 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                       });
                       uploading = false;
                     } else if (_image == null) {
-                      Fluttertoast.showToast(
+                      flutterToast(
                           msg:
                               'Please Capture an Image Using your Phone Camera');
                     }

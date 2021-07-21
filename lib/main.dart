@@ -1,10 +1,10 @@
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Screens/PlantView/plantView_helper.dart';
 import 'package:collegeproject/Screens/WidgetTree.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 Future<void> _messageHandler(RemoteMessage message) async {
@@ -31,6 +31,26 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        theme: ThemeData(
+          accentColor: Colors.purple[900],
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black),
+            elevation: 0.5,
+            titleTextStyle: GoogleFonts.montserrat(
+              color: Colors.black,
+            ),
+          ),
+          floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: Colors.purple[900],
+            splashColor: Colors.transparent,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.purple[900]),
+            ),
+          ),
+        ),
         debugShowCheckedModeBanner: false,
         home: WidgetTree(),
       ),

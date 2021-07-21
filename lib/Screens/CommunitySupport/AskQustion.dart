@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Provider/TextFeild.dart';
+import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:random_string/random_string.dart';
 
 class AskQustion extends StatefulWidget {
   @override
@@ -15,8 +16,22 @@ class AskQustion extends StatefulWidget {
 class _AskQustionState extends State<AskQustion> {
   final _formKey = GlobalKey<FormState>();
   bool _enableBotton = false;
+  String uniqudocid;
 
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
+  randomgen() {
+    String uid = randomAlphaNumeric(10);
+    setState(() {
+      uniqudocid = uid;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    randomgen();
+  }
 
   File _image;
   String imageUrl;
@@ -62,18 +77,18 @@ class _AskQustionState extends State<AskQustion> {
                 StorageUtil.getString("uid"),
               )
               .collection("Queries")
-              .doc("123456")
+              .doc(uniqudocid)
               .set({
             "qus": qus.toString(),
             "img": displayUrl.toString(),
-            "docid": "123456",
+            "docid": uniqudocid,
             "views": 0,
             "ans": "no_ans_yet",
           });
-          firebaseFirestore.collection("AllQueries").doc("123456").set({
+          firebaseFirestore.collection("AllQueries").doc(uniqudocid).set({
             "qus": qus.toString(),
             "img": displayUrl.toString(),
-            "docid": "123456",
+            "docid": uniqudocid,
             "views": 0,
             "ans": "no_ans_yet",
           });
@@ -91,18 +106,18 @@ class _AskQustionState extends State<AskQustion> {
           StorageUtil.getString("uid"),
         )
         .collection("Queries")
-        .doc("1234567")
+        .doc(uniqudocid)
         .set({
       "qus": qus.toString(),
       "img": "",
-      "docid": "1234567",
+      "docid": uniqudocid.toString(),
       "views": 0,
       "ans": "no_ans_yet",
     });
-    firebaseFirestore.collection("AllQueries").doc("1234567").set({
+    firebaseFirestore.collection("AllQueries").doc(uniqudocid).set({
       "qus": qus.toString(),
       "img": "",
-      "docid": "1234567",
+      "docid": uniqudocid.toString(),
       "views": 0,
       "ans": "no_ans_yet",
     });

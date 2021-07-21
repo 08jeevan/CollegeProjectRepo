@@ -1,13 +1,12 @@
 import 'package:collegeproject/Provider/Auth.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Provider/TextFeild.dart';
 import 'package:collegeproject/Screens/CommunitySupport/CommunityLandingPage.dart';
+import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -18,7 +17,6 @@ class _SettingsPageState extends State<SettingsPage> {
   String val = "";
   // Form
   final _formKey = GlobalKey<FormState>();
-  bool _enableBotton = false;
 
   TextEditingController subjectController = TextEditingController();
   TextEditingController messageController = TextEditingController();
@@ -34,11 +32,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // Signed In user details
   final user = FirebaseAuth.instance.currentUser;
-
-  // Sign Out
-  // Future<void> signOut() async {
-  //   await Authentification().signOut();
-  // }
 
   Authentification authentification = Authentification();
 
@@ -71,11 +64,6 @@ class _SettingsPageState extends State<SettingsPage> {
                     collapsed: Container(),
                     expanded: Form(
                       key: _formKey,
-                      onChanged: (() {
-                        setState(() {
-                          _enableBotton = _formKey.currentState.validate();
-                        });
-                      }),
                       child: Container(
                         child: Column(
                           children: [
@@ -93,9 +81,6 @@ class _SettingsPageState extends State<SettingsPage> {
                               name: "Message",
                               validator: ((value) {
                                 if (value.isEmpty) {
-                                  setState(() {
-                                    _enableBotton = true;
-                                  });
                                   return 'Message is required';
                                 }
                                 return null;
@@ -105,17 +90,21 @@ class _SettingsPageState extends State<SettingsPage> {
                             ),
                             ElevatedButton(
                               child: Text("Submit"),
-                              onPressed: _enableBotton
-                                  ? (() async {
-                                      final Email email = Email(
-                                        body: messageController.text,
-                                        subject: subjectController.text,
-                                        recipients: ["ourproject@gmail.com"],
-                                        isHTML: false,
-                                      );
-                                      await FlutterEmailSender.send(email);
-                                    })
-                                  : null,
+                              onPressed: () async {
+                                if (_formKey.currentState.validate()) {
+                                  _formKey.currentState.save();
+                                  final Email email = Email(
+                                    body: messageController.text,
+                                    subject: subjectController.text,
+                                    recipients: ["ourproject@gmail.com"],
+                                    isHTML: false,
+                                  );
+                                  await FlutterEmailSender.send(email);
+                                } else {
+                                  flutterToast(
+                                      msg: 'Text feild should not be empty');
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -130,8 +119,8 @@ class _SettingsPageState extends State<SettingsPage> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      leading: Icon(Icons.support_agent_outlined,
-                          color: Colors.black),
+                      leading:
+                          Icon(Icons.message_outlined, color: Colors.black),
                       onTap: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {
