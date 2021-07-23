@@ -1,35 +1,43 @@
 import 'package:collegeproject/API/WeatherApi.dart';
+import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:flutter/material.dart';
 
 Widget weatherBox(Weather _weather, context) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+    padding: const EdgeInsets.symmetric(horizontal: 20.0),
     child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        color: Colors.red,
+        borderRadius: BorderRadius.circular(25.0),
+        color: Colors.purple[200],
       ),
       height: 80.0,
       width: MediaQuery.of(context).size.width,
       child: Row(
         children: [
-          // Expanded(
-          //   child: Container(
-          //     child: Text("The Weather is too" +
-          //         _weather.main +
-          //         ". It may ...... toady"),
-          //   ),
-          // ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  child: Text(_weather.main, style: klargetextboldwhitestyle),
+                ),
+                Container(
+                  child: Text("at " + _weather.place,
+                      style: kdefaulttextstylewhite),
+                ),
+              ],
+            ),
+          ),
           Container(
-            width: 50.0,
-            color: Colors.green,
             child: Container(
-              height: 30.0,
-              width: 30.0,
-
-              //   child: Image.network('http://openweathermap.org/img/wn/' +
-              //       _weather.icon +
-              //       '@2x.png'),
+              height: 50.0,
+              width: 50.0,
+              child: Image.network(
+                'http://openweathermap.org/img/wn/' + _weather.icon + '@2x.png',
+                fit: BoxFit.cover,
+              ),
             ),
           ),
         ],
@@ -37,26 +45,3 @@ Widget weatherBox(Weather _weather, context) {
     ),
   );
 }
-
-
-// Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-//     Container(
-//         margin: const EdgeInsets.all(10.0),
-//         child: Text(
-//           "${_weather.temp}°C",
-//           textAlign: TextAlign.center,
-//           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 55),
-//         )),
-//     Container(
-//         margin: const EdgeInsets.all(5.0),
-//         child: Text("${_weather.description}")),
-//     Container(
-//         margin: const EdgeInsets.all(5.0), child: Text("${_weather.place}")),
-//     Container(
-//         margin: const EdgeInsets.all(5.0),
-//         child: Text("Feels:${_weather.feelsLike}°C")),
-//     Container(
-//         margin: const EdgeInsets.all(5.0),
-//         child: Text("H:${_weather.high}°C L:${_weather.low}°C")),
-//   ]);
-

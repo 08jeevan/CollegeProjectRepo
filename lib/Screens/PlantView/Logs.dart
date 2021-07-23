@@ -18,6 +18,12 @@ class _PlanViewLogsState extends State<PlanViewLogs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Logs',
+          style: kApptitletextStyle,
+        ),
+      ),
       body: StreamBuilder(
         stream: FirebaseDatabase.instance
             .reference()
@@ -47,6 +53,7 @@ class _PlanViewLogsState extends State<PlanViewLogs> {
                   padding:
                       EdgeInsets.symmetric(horizontal: 25.0, vertical: 5.0),
                   child: Container(
+                    padding: EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey[400]),
                       borderRadius: BorderRadius.circular(15.0),

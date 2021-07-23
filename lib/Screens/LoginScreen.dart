@@ -33,29 +33,34 @@ class _LoginScreenState extends State<LoginScreen> {
               fit: BoxFit.fill,
             ),
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Container(
-                height: 200.0,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Container(
+              height: 300.0,
+              width: MediaQuery.of(context).size.width,
+              child: Center(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Smart",
-                      style: GoogleFonts.redHatDisplay(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 40.0),
+                    Container(
+                      height: 60.0,
+                      width: 60.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10.0),
+                        child: Image.asset(
+                          'Images/appicon.png',
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                     ),
                     Text(
-                      "Garden",
-                      style: GoogleFonts.redHatDisplay(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          fontSize: 40.0),
+                      "Smart Garden",
+                      style: GoogleFonts.montserrat(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 40.0,
+                      ),
                     ),
                   ],
                 ),
@@ -72,10 +77,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   authentification.signup(context);
                 },
                 child: Container(
-                  height: 60.0,
+                  height: 55.0,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: BorderRadius.circular(20.0),
                     color: Colors.blue,
                   ),
                   child: Center(

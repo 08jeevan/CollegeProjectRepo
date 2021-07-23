@@ -56,20 +56,13 @@ dependencies:
   # Expandable
   expandable: ^5.0.1
   # Country List
-  country_list_pick: ^1.0.0+3
+  country_code_picker: ^2.0.2
   # Http
   http: 
   #Page Translation
   page_transition: ^2.0.2
   # Unique ID generator
   random_string: ^2.3.1
-  # Charts
-  # charts_flutter: ^0.11.0
-  fl_chart:
-  # 
-  pdf: ^3.4.2
-  flutter_full_pdf_viewer: ^1.0.6
-  flutter_local_notifications:
 
 dev_dependencies:
   flutter_test:

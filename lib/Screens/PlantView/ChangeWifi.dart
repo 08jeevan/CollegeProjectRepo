@@ -39,7 +39,7 @@ class _ChangeWifiState extends State<ChangeWifi> {
           child: Column(
             children: <Widget>[
               SizedBox(height: 25.0),
-              Text("Change Wifi Settings"),
+              Text("Change Wifi Settings", style: klargetextboldstyle),
               SizedBox(height: 25.0),
               TextFields(
                 controller: changewifiid,
@@ -61,34 +61,58 @@ class _ChangeWifiState extends State<ChangeWifi> {
                   return null;
                 },
               ),
-              ElevatedButton(
-                child: Text('Change Wifi', style: kdefaulttextstylewhite),
-                onPressed: () {
-                  if (changewifipass.text.isEmpty &&
-                      changewifiid.text.isEmpty) {
-                    Fluttertoast.showToast(
-                      msg: "Please fill out the form",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      textColor: Colors.white,
-                      fontSize: 16.0,
-                    );
-                  }
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    child: Text('Close', style: kdefaulttextstylewhite),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      databaseReference
+                          .child(
+                            StorageUtil.getString("uid"),
+                          )
+                          .child('PlantData')
+                          .child(widget.plantID.toString())
+                          .update({
+                        "changepass": false,
+                      });
+                    },
+                  ),
+                  //
+                  SizedBox(width: 10.0),
+                  ElevatedButton(
+                    child: Text('Change Wifi', style: kdefaulttextstylewhite),
+                    onPressed: () {
+                      if (changewifipass.text.isEmpty &&
+                          changewifiid.text.isEmpty) {
+                        Fluttertoast.showToast(
+                          msg: "Please fill out the form",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
+                      }
 
-                  databaseReference
-                      .child(
-                        StorageUtil.getString("uid"),
-                      )
-                      .child('PlantData')
-                      .child(widget.plantID.toString())
-                      .update({
-                    "changepass": true,
-                    "ssid": changewifiid.text,
-                    "pass": changewifipass.text
-                  }).then((value) => flutterToast(msg: "Wifi Reset secussful"));
-                  Navigator.pop(context);
-                },
-              )
+                      databaseReference
+                          .child(
+                            StorageUtil.getString("uid"),
+                          )
+                          .child('PlantData')
+                          .child(widget.plantID.toString())
+                          .update({
+                        "changepass": true,
+                        "ssid": changewifiid.text,
+                        "pass": changewifipass.text
+                      }).then((value) =>
+                              flutterToast(msg: "Wifi Reset secussful"));
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.0),
             ],
           ),
         ),

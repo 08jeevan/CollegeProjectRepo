@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collegeproject/Provider/FirebaseHelper.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
+
+FirebaseHelper firebaseHelper = FirebaseHelper();
 
 class AskQustion extends StatefulWidget {
   @override
@@ -60,7 +63,7 @@ class _AskQustionState extends State<AskQustion> {
   }
 
   // Uploading Images and Other info to Storage & DB
-  upload({String qus}) async {
+  upload() async {
     UploadTask uploadTask = reference.putFile(
       _image,
     );
@@ -71,55 +74,14 @@ class _AskQustionState extends State<AskQustion> {
         imageUrl = await reference.getDownloadURL();
         setState(() {
           displayUrl = imageUrl;
-          firebaseFirestore
-              .collection("Users")
-              .doc(
-                StorageUtil.getString("uid"),
-              )
-              .collection("Queries")
-              .doc(uniqudocid)
-              .set({
-            "qus": qus.toString(),
-            "img": displayUrl.toString(),
-            "docid": uniqudocid,
-            "views": 0,
-            "ans": "no_ans_yet",
-          });
-          firebaseFirestore.collection("AllQueries").doc(uniqudocid).set({
-            "qus": qus.toString(),
-            "img": displayUrl.toString(),
-            "docid": uniqudocid,
-            "views": 0,
-            "ans": "no_ans_yet",
-          });
+          firebaseHelper.askaQustion(
+              uniquedocid: uniqudocid,
+              qus: qustitle.text,
+              image: displayUrl.toString());
         });
       } catch (onError) {
         print("Error");
       }
-    });
-  }
-
-  uploadonlyQus({String qus}) {
-    firebaseFirestore
-        .collection("Users")
-        .doc(
-          StorageUtil.getString("uid"),
-        )
-        .collection("Queries")
-        .doc(uniqudocid)
-        .set({
-      "qus": qus.toString(),
-      "img": "",
-      "docid": uniqudocid.toString(),
-      "views": 0,
-      "ans": "no_ans_yet",
-    });
-    firebaseFirestore.collection("AllQueries").doc(uniqudocid).set({
-      "qus": qus.toString(),
-      "img": "",
-      "docid": uniqudocid.toString(),
-      "views": 0,
-      "ans": "no_ans_yet",
     });
   }
 
@@ -205,13 +167,13 @@ class _AskQustionState extends State<AskQustion> {
                   onPressed: _enableBotton
                       ? (() async {
                           if (_image == null) {
-                            uploadonlyQus(
+                            firebaseHelper.askaQustion(
+                              uniquedocid: uniqudocid,
                               qus: qustitle.text,
+                              image: '',
                             );
                           }
-                          upload(
-                            qus: qustitle.text,
-                          );
+                          upload();
                         })
                       : null,
                 ),

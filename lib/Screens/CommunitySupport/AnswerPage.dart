@@ -38,126 +38,127 @@ class _AnswerPageState extends State<AnswerPage> {
         ],
       ),
       body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(height: 10.0),
-                Container(
-                  child: Text(
-                    widget.qus.toString(),
-                    style: klargetextstyle,
-                  ),
+        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: 15.0),
+              Container(
+                child: Text(
+                  widget.qus.toString(),
+                  style: klargetextstyle,
                 ),
-                SizedBox(height: 20.0),
-                widget.img.toString() != ""
-                    ? Container(
-                        height: 200.0,
-                        width: MediaQuery.of(context).size.width,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15.0),
-                          child: Image.network(
-                            widget.img.toString(),
-                            fit: BoxFit.cover,
-                            loadingBuilder: (BuildContext context, Widget child,
-                                ImageChunkEvent loadingProgress) {
-                              if (loadingProgress == null) {
-                                return child;
-                              }
-                              return Center(
-                                child: loadingIndicator(
-                                  text: "Loading",
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      )
-                    : Container(),
-                SizedBox(height: 8.0),
-                StreamBuilder<QuerySnapshot>(
-                  stream: firebaseFirestore
-                      .collection('AllQueries')
-                      .doc(widget.docID)
-                      .collection('Ans')
-                      .snapshots(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError)
-                      return Text('Error: ${snapshot.error}');
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting:
-                        return Center(child: Text('Loading...'));
-                      default:
-                        return ListView(
-                          shrinkWrap: true,
-                          physics: ClampingScrollPhysics(),
-                          children: snapshot.data.docs
-                              .map((DocumentSnapshot document) {
-                            return SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 2.0, vertical: 8.0),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15.0, vertical: 10.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                    color: Colors.grey[200],
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        child: ListTile(
-                                          title: Text(
-                                            "Ans by, " +
-                                                document['ansby'].toString(),
-                                            style: kdefaulttextstyleblack,
-                                          ),
-                                          minLeadingWidth: 8.0,
-                                          leading: CircleAvatar(
-                                            radius: 15.0,
-                                            backgroundImage: document[
-                                                            'ansbyprofile']
-                                                        .toString() ==
-                                                    null
-                                                ? NetworkImage(
-                                                    "https://www.hhcenter.org/wp-content/uploads/2017/02/person-placeholder.jpg")
-                                                : NetworkImage(
-                                                    document['ansbyprofile']
-                                                        .toString(),
-                                                  ),
-                                            backgroundColor: Colors.transparent,
-                                          ),
-                                        ),
-                                      ),
-                                      Divider(
-                                        color: Colors.grey,
-                                        endIndent: 60.0,
-                                        indent: 60.0,
-                                        height: 0.0,
-                                      ),
-                                      SizedBox(height: 10.0),
-                                      Container(
-                                        child: Text(
-                                          document['ans'].toString(),
-                                          style: kmediumtextstyle,
-                                        ),
-                                      ),
-                                      SizedBox(height: 10.0),
-                                    ],
-                                  ),
-                                ),
+              ),
+              SizedBox(height: 20.0),
+              widget.img.toString() != ""
+                  ? Container(
+                      height: 200.0,
+                      width: MediaQuery.of(context).size.width,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: Image.network(
+                          widget.img.toString(),
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            }
+                            return Center(
+                              child: loadingIndicator(
+                                text: "Loading",
                               ),
                             );
-                          }).toList(),
-                        );
-                    }
-                  },
-                ),
-              ],
-            ),
-          )),
+                          },
+                        ),
+                      ),
+                    )
+                  : Container(),
+              SizedBox(height: 8.0),
+              StreamBuilder<QuerySnapshot>(
+                stream: firebaseFirestore
+                    .collection('AllQueries')
+                    .doc(widget.docID)
+                    .collection('Ans')
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError)
+                    return Text('Error: ${snapshot.error}');
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.waiting:
+                      return Center(child: Text('Loading...'));
+                    default:
+                      return ListView(
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        children:
+                            snapshot.data.docs.map((DocumentSnapshot document) {
+                          return SingleChildScrollView(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 2.0, vertical: 8.0),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 10.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: Colors.grey[300],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      child: ListTile(
+                                        title: Text(
+                                          "Ans by, " +
+                                              document['ansby'].toString(),
+                                          style: kdefaulttextstyleblack,
+                                        ),
+                                        minLeadingWidth: 8.0,
+                                        leading: CircleAvatar(
+                                          radius: 15.0,
+                                          backgroundImage: document[
+                                                          'ansbyprofile']
+                                                      .toString() ==
+                                                  null
+                                              ? NetworkImage(
+                                                  "https://www.hhcenter.org/wp-content/uploads/2017/02/person-placeholder.jpg")
+                                              : NetworkImage(
+                                                  document['ansbyprofile']
+                                                      .toString(),
+                                                ),
+                                          backgroundColor: Colors.transparent,
+                                        ),
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: Colors.grey,
+                                      endIndent: 60.0,
+                                      indent: 60.0,
+                                      height: 0.0,
+                                    ),
+                                    SizedBox(height: 10.0),
+                                    Container(
+                                      child: Text(
+                                        document['ans'].toString(),
+                                        style: kmediumtextstyle,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10.0),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

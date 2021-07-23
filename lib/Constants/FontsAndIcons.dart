@@ -23,6 +23,11 @@ final kmediumtextstyle = GoogleFonts.montserrat(
   fontSize: 15.0,
 );
 
+final kmediumredtextstyle = GoogleFonts.montserrat(
+  color: Colors.red,
+  fontSize: 15.0,
+);
+
 final klargetextstyle = GoogleFonts.montserrat(
   color: Colors.black,
   fontSize: 20.0,
@@ -30,6 +35,12 @@ final klargetextstyle = GoogleFonts.montserrat(
 
 final klargetextboldstyle = GoogleFonts.montserrat(
   color: Colors.black,
+  fontSize: 20.0,
+  fontWeight: FontWeight.w500,
+);
+
+final klargetextboldwhitestyle = GoogleFonts.montserrat(
+  color: Colors.white,
   fontSize: 20.0,
   fontWeight: FontWeight.w500,
 );

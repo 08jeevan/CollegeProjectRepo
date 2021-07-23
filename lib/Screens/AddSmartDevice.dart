@@ -1,15 +1,17 @@
 import 'dart:io';
 import 'package:collegeproject/BottomNavBar.dart';
 import 'package:collegeproject/Constants/FontsAndIcons.dart';
+import 'package:collegeproject/Constants/Lists.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
+import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
-import 'package:country_list_pick/country_list_pick.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+
+CountryandPlants cnp = CountryandPlants();
 
 class AddSmartDevice extends StatefulWidget {
   @override
@@ -29,13 +31,18 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
 
   File _image;
 
-  String countryCode;
+  String selectedcountrycode;
 
   final picker = ImagePicker();
 
   var _chosenValue;
 
   final databaseReference = FirebaseDatabase.instance.reference();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   // DB Rederence
   Reference reference = FirebaseStorage.instance
@@ -116,7 +123,7 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
           ref.child("hum").set(0);
           ref.child('temp').set(0.01);
           ref.child('zipcode').set(zipcode.text);
-          ref.child('countrycode').set(countryCode);
+          ref.child('countrycode').set(selectedcountrycode.toString());
           ref.child("changepass").set(false);
           ref
               .child("plantimg")
@@ -124,20 +131,22 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                 displayUrl.toString(),
               )
               .whenComplete(
-                () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return MyNavBar();
-                    },
-                  ),
+            () {
+              Navigator.pop(context);
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return MyNavBar();
+                  },
                 ),
               );
+            },
+          );
           // This is for IOT Devices reference
           final deviceref =
               databaseReference.child('devices').child(uniquedeviceid.text);
           deviceref.child('plantname').set(_chosenValue);
-          //TOD0: Chanage UID
           deviceref.child('uid').set(
                 StorageUtil.getString("uid"),
               );
@@ -214,7 +223,7 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                         plantList.map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
-                        child: Text(value.substring(0, value.length - 2)),
+                        child: Text(value),
                       );
                     }).toList(),
                     hint: Text(
@@ -265,37 +274,48 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                   },
                 ),
                 Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 60.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: Colors.grey[200],
-                  ),
-                  child: CountryListPick(
-                    theme: CountryTheme(
-                      isShowCode: false,
-                      isDownIcon: false,
-                      isShowTitle: true,
-                      alphabetTextColor: Colors.black,
-                      labelColor: Colors.black,
-                      alphabetSelectedTextColor: Colors.black,
-                      alphabetSelectedBackgroundColor: Colors.transparent,
-                      showEnglishName: true,
-                      isShowFlag: false,
+                  // width: MediaQuery.of(context).size.width,
+                  child: DropdownButtonFormField<String>(
+                    iconEnabledColor: Colors.transparent,
+                    value: selectedcountrycode,
+                    style: TextStyle(color: Colors.black),
+                    items: cnp.counrtyList
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    hint: Text(
+                      "Select country",
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
-                    initialSelection: '+91',
-                    onChanged: (CountryCode code) {
-                      print(code.code);
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: InputBorder.none,
+                      fillColor: Colors.grey[200],
+                      filled: true,
+                      focusedErrorBorder: kborder,
+                      focusedBorder: kborder,
+                      enabledBorder: kborder,
+                      errorBorder: kborder,
+                    ),
+                    onChanged: (String value) {
                       setState(() {
-                        countryCode = code.code;
+                        selectedcountrycode = value;
                       });
                     },
+                    validator: (value) => value == null
+                        ? 'Please Select your country name'
+                        : null,
                   ),
                 ),
                 SizedBox(height: 25.0),
 
                 ElevatedButton(
-                  child: Text("Submit", style: kdefaulttextstylewhite),
+                  child: Text("Add Plant", style: kdefaulttextstylewhite),
                   onPressed: () {
                     if (_formKey.currentState.validate() && _image != null) {
                       _formKey.currentState.save();
@@ -303,32 +323,17 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                         uploading = true;
                         if (uploading = true) {
                           //
-                          showDialog<void>(
-                            context: context,
+                          showDialog(
                             barrierDismissible: false,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: SingleChildScrollView(
-                                  child: ListBody(
-                                    children: <Widget>[
-                                      Row(
-                                        children: [
-                                          Container(
-                                            height: 20.0,
-                                            width: 20.0,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 5.0,
-                                            ),
-                                          ),
-                                          SizedBox(width: 15.0),
-                                          Text('Hold on! Uploading'),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
+                            context: context,
+                            builder: (context) => Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5.0, vertical: 5.0),
+                              child: AlertDialog(
+                                content: loadingIndicator(
+                                    text: 'Hold on! Uploading data'),
+                              ),
+                            ),
                           );
                         }
                         // All the data get Uploaded

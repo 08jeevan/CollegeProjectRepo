@@ -2,9 +2,9 @@ class DHT {
   var temp;
   var humidity;
   var moisture;
+  var zipcode;
   final String plantimg;
   final String docID;
-  final int zipcode;
   final String countryCode;
   final String plantname;
   final String smartDeviceId;

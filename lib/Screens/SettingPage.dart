@@ -1,3 +1,4 @@
+import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/Auth.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/CommunitySupport/CommunityLandingPage.dart';
@@ -45,6 +46,35 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Container(
               child: Column(
                 children: [
+                  Container(
+                    height: 180.0,
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          radius: 50.0,
+                          backgroundImage: NetworkImage(
+                            user.photoURL.toString(),
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        title: Text(
+                          user.displayName.toString(),
+                          style: klargetextboldstyle,
+                        ),
+                        subtitle: Text(
+                          user.email.toString(),
+                          style: kmediumtextstyle,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.grey[300],
+                    indent: 25.0,
+                    endIndent: 25.0,
+                    height: 0.0,
+                  ),
                   SizedBox(height: 25.0),
                   ExpandablePanel(
                     theme: ExpandableThemeData(

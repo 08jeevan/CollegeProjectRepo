@@ -75,22 +75,7 @@ class _MyNavBarState extends State<MyNavBar> {
               BottomNavigationBarItem(
                 icon: Padding(
                     padding: const EdgeInsets.only(right: 60.0),
-                    child: user.photoURL == null
-                        ? Icon(Icons.settings)
-                        : Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                            ),
-                            height: 30.0,
-                            width: 30.0,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(25.0),
-                              child: Image.network(
-                                user.photoURL,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          )),
+                    child: Icon(FontAwesome.user_o)),
                 title: Text(
                   "",
                   style: TextStyle(height: 0.0),

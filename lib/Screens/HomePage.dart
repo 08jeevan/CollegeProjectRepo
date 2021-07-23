@@ -180,15 +180,13 @@ class _HomePageState extends State<HomePage> {
                       );
                     } else if (lists.isNotEmpty) {
                       return Container(
-                        child: Text(
-                            'No Plants added yet.\n Click the ➕ icon to add your plant',
+                        child: Text('No Plants added yet.',
                             style: kmediumtextstyle),
                       );
                     } else {
                       return Container(
                         child: Center(
-                          child: Text(
-                              'No Plants added yet.\n Click the ➕ icon to add your plant',
+                          child: Text('No Plants added yet.',
                               style: kmediumtextstyle),
                         ),
                       );

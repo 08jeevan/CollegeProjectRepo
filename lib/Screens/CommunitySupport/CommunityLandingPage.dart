@@ -140,23 +140,27 @@ class _CommunityLandingPageState extends State<CommunityLandingPage> {
                                                     ),
                                                   ),
                                                 ),
-                                          SizedBox(height: 12.0),
+                                          document['img'].toString() == ""
+                                              ? Container()
+                                              : SizedBox(height: 12.0),
                                           ElevatedButton(
-                                            child: Text(
-                                              'Answer this Qustion',
-                                              style: kdefaulttextstylewhite,
-                                            ),
-                                            onPressed: () => Navigator.push(
-                                                context, MaterialPageRoute(
-                                                    builder: (context) {
-                                              return AnsaQustion(
-                                                docID: document['docid']
-                                                    .toString(),
-                                                qustitle:
-                                                    document['qus'].toString(),
-                                              );
-                                            })),
-                                          ),
+                                              child: Text(
+                                                'Answer this Qustion',
+                                                style: kdefaulttextstylewhite,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return AnsaQustion(
+                                                    docID: document['docid']
+                                                        .toString(),
+                                                    qustitle: document['qus']
+                                                        .toString(),
+                                                  );
+                                                }));
+                                              }),
                                           SizedBox(height: 10.0),
                                         ],
                                       ),
