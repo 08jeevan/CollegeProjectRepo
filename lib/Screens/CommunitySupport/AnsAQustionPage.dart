@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/FirebaseHelper.dart';
-import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Screens/CommunitySupport/CommunityLandingPage.dart';
 import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
 import 'package:firebase_auth/firebase_auth.dart';

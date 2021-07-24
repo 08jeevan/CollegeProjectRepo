@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collegeproject/BottomNavBar.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
-import 'package:collegeproject/Screens/CommunitySupport/CommunityLandingPage.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
