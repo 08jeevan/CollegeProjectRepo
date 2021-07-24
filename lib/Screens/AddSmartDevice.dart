@@ -1,17 +1,15 @@
 import 'dart:io';
 import 'package:collegeproject/BottomNavBar.dart';
 import 'package:collegeproject/Constants/FontsAndIcons.dart';
-import 'package:collegeproject/Constants/Lists.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-
-CountryandPlants cnp = CountryandPlants();
 
 class AddSmartDevice extends StatefulWidget {
   @override
@@ -38,6 +36,13 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
   var _chosenValue;
 
   final databaseReference = FirebaseDatabase.instance.reference();
+
+  bool _isNumeric(String result) {
+    if (result == null) {
+      return false;
+    }
+    return double.tryParse(result) != null;
+  }
 
   @override
   void initState() {
@@ -268,48 +273,34 @@ class _AddSmartDeviceState extends State<AddSmartDevice> {
                   name: 'Enter your Zipcode',
                   validator: (value) {
                     if (value.isEmpty) {
-                      return 'Please Enter your IOT Unique ID';
+                      return 'Please Enter your valid Zipcode';
+                    } else if (_isNumeric(value) == false) {
+                      return 'Zipcode should be number';
                     }
                     return null;
                   },
                 ),
                 Container(
-                  // width: MediaQuery.of(context).size.width,
-                  child: DropdownButtonFormField<String>(
-                    iconEnabledColor: Colors.transparent,
-                    value: selectedcountrycode,
-                    style: TextStyle(color: Colors.black),
-                    items: cnp.counrtyList
-                        .map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    hint: Text(
-                      "Select country",
-                      style: TextStyle(
-                        fontSize: 16,
-                      ),
-                    ),
-                    decoration: InputDecoration(
-                      floatingLabelBehavior: FloatingLabelBehavior.never,
-                      border: InputBorder.none,
-                      fillColor: Colors.grey[200],
-                      filled: true,
-                      focusedErrorBorder: kborder,
-                      focusedBorder: kborder,
-                      enabledBorder: kborder,
-                      errorBorder: kborder,
-                    ),
-                    onChanged: (String value) {
+                  height: 55.0,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  child: CountryCodePicker(
+                    onChanged: (value) {
                       setState(() {
-                        selectedcountrycode = value;
+                        selectedcountrycode = value.code.toString();
                       });
                     },
-                    validator: (value) => value == null
-                        ? 'Please Select your country name'
-                        : null,
+                    favorite: ['+91', 'IN'],
+                    dialogTextStyle: TextStyle(),
+                    showFlag: false,
+                    textOverflow: TextOverflow.visible,
+                    initialSelection: ('Select your Country'),
+                    showCountryOnly: true,
+                    showOnlyCountryWhenClosed: true,
+                    alignLeft: false,
                   ),
                 ),
                 SizedBox(height: 25.0),

@@ -82,9 +82,14 @@ class _PlantViewState extends State<PlantView> {
                         Positioned(
                           top: 35.0,
                           left: 30.0,
-                          child: Icon(
-                            AntDesign.arrowleft,
-                            color: Colors.black,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Icon(
+                              AntDesign.arrowleft,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                         Positioned(

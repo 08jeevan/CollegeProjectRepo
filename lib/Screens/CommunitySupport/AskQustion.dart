@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collegeproject/Provider/FirebaseHelper.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
+import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -75,9 +76,11 @@ class _AskQustionState extends State<AskQustion> {
         setState(() {
           displayUrl = imageUrl;
           firebaseHelper.askaQustion(
-              uniquedocid: uniqudocid,
-              qus: qustitle.text,
-              image: displayUrl.toString());
+            context: context,
+            uniquedocid: uniqudocid,
+            qus: qustitle.text,
+            image: displayUrl.toString(),
+          );
         });
       } catch (onError) {
         print("Error");
@@ -166,8 +169,23 @@ class _AskQustionState extends State<AskQustion> {
                   child: Text("Submit"),
                   onPressed: _enableBotton
                       ? (() async {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) => Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 5.0, vertical: 5.0),
+                              child: AlertDialog(
+                                content: loadingIndicator(
+                                  text: 'Uploading Qustion',
+                                ),
+                              ),
+                            ),
+                          );
                           if (_image == null) {
+                            //
                             firebaseHelper.askaQustion(
+                              context: context,
                               uniquedocid: uniqudocid,
                               qus: qustitle.text,
                               image: '',

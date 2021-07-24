@@ -63,13 +63,15 @@ class FirebaseHelper {
               "ansby": username,
               "ansbyprofile": userprofile,
             }))
-        .whenComplete(
-          () => Navigator.pop(context),
-        );
+        .whenComplete(() {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
   }
 
   // Ask a Qustion Helper
   void askaQustion({
+    context,
     String uniquedocid,
     String qus,
     String image,
@@ -94,6 +96,9 @@ class FirebaseHelper {
       "docid": uniquedocid.toString(),
       "views": 0,
       "ans": "no_ans_yet",
+    }).whenComplete(() {
+      Navigator.pop(context);
+      Navigator.pop(context);
     });
   }
 }

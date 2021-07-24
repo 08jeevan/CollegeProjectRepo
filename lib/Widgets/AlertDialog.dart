@@ -44,5 +44,3 @@ class Deleteafile extends StatelessWidget {
     );
   }
 }
-
-

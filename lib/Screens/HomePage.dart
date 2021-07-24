@@ -1,13 +1,10 @@
 import 'package:collegeproject/Constants/FontsAndIcons.dart';
-import 'package:collegeproject/Provider/Notification.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/PlantView/PlantView.dart';
 import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-
-Notifiation notifiation = Notifiation();
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,13 +16,6 @@ class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser;
 
   String uid = '';
-  // Notification
-  @override
-  void initState() {
-    super.initState();
-    notifiation.noti(context);
-  }
-
   final dbRef = FirebaseDatabase.instance
       .reference()
       .child(

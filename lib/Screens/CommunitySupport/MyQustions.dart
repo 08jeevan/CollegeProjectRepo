@@ -57,7 +57,7 @@ class _MyQustionsState extends State<MyQustions> {
                       return GestureDetector(
                         onTap: () {
                           document['ans'].toString() == "no_ans_yet"
-                              ? Fluttertoast.showToast(msg: 'No any answers')
+                              ? Fluttertoast.showToast(msg: 'No answers found')
                               : Navigator.push(
                                   context,
                                   PageTransition(
@@ -75,19 +75,23 @@ class _MyQustionsState extends State<MyQustions> {
                             document['qus'].toString(),
                             style: kmediumtextstyle,
                           ),
-                      subtitle: document['ans'].toString() == "no_ans_yet"
+                          subtitle: document['ans'].toString() == "no_ans_yet"
                               ? Container(
-                                  child: Text("No Answer yet", style: kdefaulttextstyleblack),
+                                  child: Text("No Answer yet",
+                                      style: kdefaulttextstyleblack),
                                 )
                               : Container(
                                   child: Row(
                                     children: [
                                       Container(
-                                        child: Text("Answered", style: kdefaulttextstyleblack),
+                                        child: Text("Answered",
+                                            style: kdefaulttextstyleblack),
                                       ),
                                       SizedBox(width: 15.0),
-                                      Text(document['views'].toString() +
-                                          " views", style: kdefaulttextstyleblack)
+                                      Text(
+                                          document['views'].toString() +
+                                              " views",
+                                          style: kdefaulttextstyleblack)
                                     ],
                                   ),
                                 ),
@@ -107,6 +111,3 @@ class _MyQustionsState extends State<MyQustions> {
     );
   }
 }
-
-
-

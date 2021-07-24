@@ -3,6 +3,7 @@ import 'package:collegeproject/Constants/FontsAndIcons.dart';
 import 'package:collegeproject/Provider/FirebaseHelper.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/CommunitySupport/CommunityLandingPage.dart';
+import 'package:collegeproject/Widgets/LoadingIndicator.dart';
 import 'package:collegeproject/Widgets/Toastandtextfeilds.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -65,7 +66,19 @@ class _AnsaQustionState extends State<AnsaQustion> {
                 onPressed: () async {
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();
-                    flutterToast(msg: 'Hold on! Submitting answer');
+                    showDialog(
+                      barrierDismissible: false,
+                      context: context,
+                      builder: (context) => Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 5.0, vertical: 5.0),
+                        child: AlertDialog(
+                          content: loadingIndicator(
+                            text: 'Uploading Answer',
+                          ),
+                        ),
+                      ),
+                    );
                     setState(() {
                       firebaseHelper.ansaqustion(
                         context: context,

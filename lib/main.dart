@@ -1,23 +1,17 @@
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:collegeproject/Screens/WidgetTree.dart';
+import 'package:country_code_picker/country_localizations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-Future<void> _messageHandler(RemoteMessage message) async {
-  print('...............................................');
-  print('background message ${message.notification.body}');
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
-  FirebaseMessaging.onBackgroundMessage(_messageHandler);
   await StorageUtil.getInstance();
   runApp(MyApp());
 }
@@ -33,6 +27,10 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        supportedLocales: [Locale("en")],
+        localizationsDelegates: [
+          CountryLocalizations.delegate,
+        ],
         theme: ThemeData(
           accentColor: Colors.purple[900],
           appBarTheme: AppBarTheme(
