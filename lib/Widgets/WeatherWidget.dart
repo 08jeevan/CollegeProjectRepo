@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 
 Widget weatherBox(Weather _weather, context) {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+    padding: EdgeInsets.symmetric(horizontal: 20.0),
     child: Container(
-      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
+      padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 15.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
         color: Colors.purple[200],

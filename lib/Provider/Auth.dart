@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collegeproject/Provider/SharedPref.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -17,6 +18,7 @@ class Authentification {
       final AuthCredential authCredential = GoogleAuthProvider.credential(
           idToken: googleSignInAuthentication.idToken,
           accessToken: googleSignInAuthentication.accessToken);
+      final token = await FirebaseMessaging.instance.getToken();
 
       // Getting users credential
       UserCredential result = await auth.signInWithCredential(authCredential);
@@ -31,6 +33,7 @@ class Authentification {
         'Name': data.displayName.toString(),
         'EmailID': data.email.toString(),
         'Image': data.photoURL.toString(),
+        'token': token,
       });
       // Cloud
       FirebaseFirestore.instance

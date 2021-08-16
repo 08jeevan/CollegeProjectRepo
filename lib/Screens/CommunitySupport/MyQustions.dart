@@ -5,7 +5,6 @@ import 'package:collegeproject/Screens/CommunitySupport/AnswerPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 
 class MyQustions extends StatefulWidget {
